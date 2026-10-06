@@ -71,3 +71,26 @@ Orden cripto en `sourceOrder`: kraken → coinbase → coingecko → eodhd → b
 `riskScoreOf` arranca en 55 para cripto y suma hasta +25 por ATR%; con umbral `>=80` varias
 cripto caen en `FUNDAMENTAL_RISK` aunque su riesgo sea puramente de volatilidad (la etiqueta
 es engañosa). Es una decisión de diseño del motor; no se cambió la semántica.
+
+## Publicación estática (GitHub Pages)
+- GitHub Pages solo sirve archivos estáticos: no puede ejecutar Hono/tRPC ni MySQL.
+  La solución es un **modo estático de solo lectura**: `app/src/lib/staticMode.ts`
+  (`VITE_STATIC=1`), `app/src/providers/staticLink.ts` (tRPC link que lee JSON) y
+  `app/scripts/snapshot-api.mjs` (captura datos reales → `app/public/snapshot/*.json`).
+- **Clave del formato:** el snapshot guarda la respuesta *wire* de tRPC (`{json, meta}`) y
+  `staticLink` la pasa por `superjson.deserialize`. Si se guardara el `.json` interno sin
+  meta, los tipos con marca superjson (Date, etc.) se rompen y React falla con
+  "Cannot read properties of undefined (reading 'filter')".
+- `radar.opportunities` (por `type`) y `radar.detail` (por `id`) se guardan como **mapas**
+  `{clave: respuesta}`; `staticLink.inputKey()` resuelve la clave desde el input.
+- `npm run snapshot` (requiere el backend en `:12000`) + `VITE_BASE=/GlobalOpportunityEngine/
+  npm run build:static`. El build genera `404.html` (fallback del SPA) y con `SKIP_SNAPSHOT=1`
+  reutiliza el snapshot versionado (lo usa CI).
+- Workflow: `.github/workflows/pages.yml` (build + deploy-pages, `VITE_BASE=/${{ repo }}/`).
+
+## Bloqueo de publicación (pendiente de credencial)
+`GITHUB_TOKEN` aquí es una credencial de **integración** (`ghu_…`) sin permiso de escritura:
+`git push` y la API de contents devuelven **403 "Resource not accessible by integration"**
+(pese a que GET del repo reporte `permissions.push=true`). El commit local está listo en
+`main` (repo git en la raíz, remote `origin` ya configurado). Para publicar hace falta un
+token/credencial con permiso de escritura sobre `ojairnp/GlobalOpportunityEngine`.
