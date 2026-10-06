@@ -88,9 +88,10 @@ es engañosa). Es una decisión de diseño del motor; no se cambió la semántic
   reutiliza el snapshot versionado (lo usa CI).
 - Workflow: `.github/workflows/pages.yml` (build + deploy-pages, `VITE_BASE=/${{ repo }}/`).
 
-## Bloqueo de publicación (pendiente de credencial)
-`GITHUB_TOKEN` aquí es una credencial de **integración** (`ghu_…`) sin permiso de escritura:
-`git push` y la API de contents devuelven **403 "Resource not accessible by integration"**
-(pese a que GET del repo reporte `permissions.push=true`). El commit local está listo en
-`main` (repo git en la raíz, remote `origin` ya configurado). Para publicar hace falta un
-token/credencial con permiso de escritura sobre `ojairnp/GlobalOpportunityEngine`.
+## Publicación (resuelta)
+`GITHUB_TOKEN` de la plataforma es una credencial de integración (`ghu_…`) sin escritura
+(403). El push se hizo con un PAT clásico del propietario (scopes `repo, workflow`).
+Repo: https://github.com/ojairnp/GlobalOpportunityEngine · rama `main` · Pages (source:
+GitHub Actions) → **https://ojairnp.github.io/GlobalOpportunityEngine/**
+Verificado en producción: dashboard con 58 activos, enlace profundo `/asset/22` y snapshot
+`/snapshot/manifest.json` responden 200.
