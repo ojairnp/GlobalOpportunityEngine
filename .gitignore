@@ -1,0 +1,31 @@
+# Dependencias
+node_modules/
+
+# Compilación
+dist/
+build/
+
+# Variables de entorno (secretos) — nunca subir
+.env
+.env.local
+.env.*.local
+
+# Registros
+*.log
+npm-debug.log*
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+
+# Cachés y cobertura
+*.tsbuildinfo
+coverage/
+.nyc_output/
+
+# Paquete de distribución local (se regenera; no versionar)
+Global-Opportunity-Engine.zip

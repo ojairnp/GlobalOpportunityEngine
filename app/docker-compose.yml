@@ -1,0 +1,58 @@
+# Global Opportunity Engine — stack completo.
+#
+#   docker compose up -d --build            # levanta MySQL + app
+#   docker compose run --rm migrate         # crea el esquema (14 tablas)
+#   # abre http://localhost:12000  y pulsa "Actualizar datos"
+#
+# Los datos se guardan en el volumen ope-mysql-data (persisten entre reinicios).
+services:
+  db:
+    image: mysql:8.0
+    container_name: ope-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: opportunity
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppass
+    ports:
+      - "3306:3306"
+    volumes:
+      - ope-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-prootpass"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  # Servicio de un solo uso: aplica el esquema Drizzle.
+  migrate:
+    build:
+      context: .
+      target: build
+    profiles: ["tools"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: mysql://appuser:apppass@db:3306/opportunity
+    command: npm run db:push
+
+  app:
+    build: .
+    container_name: ope-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: "12000"
+      APP_ID: local-dev-app-id
+      APP_SECRET: local-dev-secret-change-me-0123456789abcdef
+      DATABASE_URL: mysql://appuser:apppass@db:3306/opportunity
+    ports:
+      - "12000:12000"
+
+volumes:
+  ope-mysql-data:

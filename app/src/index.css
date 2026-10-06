@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Terminal de analista — dark only */
+    --background: 220 20% 4.5%;
+    --foreground: 215 20% 86%;
+    --card: 220 17% 7%;
+    --card-foreground: 215 20% 86%;
+    --popover: 220 17% 8%;
+    --popover-foreground: 215 20% 86%;
+    --primary: 42 88% 55%;
+    --primary-foreground: 220 30% 6%;
+    --secondary: 217 15% 13%;
+    --secondary-foreground: 215 20% 86%;
+    --muted: 217 15% 12%;
+    --muted-foreground: 215 12% 52%;
+    --accent: 217 15% 14%;
+    --accent-foreground: 42 88% 55%;
+    --destructive: 355 75% 55%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 217 14% 14%;
+    --input: 217 14% 16%;
+    --ring: 42 88% 55%;
+    --radius: 0.375rem;
+    --sidebar-background: 220 19% 5.5%;
+    --sidebar-foreground: 215 20% 86%;
+    --sidebar-primary: 42 88% 55%;
+    --sidebar-primary-foreground: 220 30% 6%;
+    --sidebar-accent: 217 15% 12%;
+    --sidebar-accent-foreground: 215 20% 86%;
+    --sidebar-border: 217 14% 13%;
+    --sidebar-ring: 42 88% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "tnum" 1, "cv05" 1;
+  }
+}
+
+@layer utilities {
+  .font-num {
+    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+  .micro-label {
+    @apply text-[10px] uppercase tracking-[0.14em] text-muted-foreground;
+  }
+  .hairline {
+    @apply border-b border-border/60;
+  }
+}
+
+/* Scrollbar discreta */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: hsl(217 14% 18%); border-radius: 4px; }
