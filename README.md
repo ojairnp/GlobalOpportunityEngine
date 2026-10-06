@@ -295,3 +295,16 @@ VITE_BASE=/GlobalOpportunityEngine/ npm run build:static
 `/asset/22`). El workflow `.github/workflows/pages.yml` compila y publica en cada push
 a `main`, reutilizando el snapshot versionado (`SKIP_SNAPSHOT=1`).
 
+### Actualización automática (sin máquina local)
+
+Los datos también se refrescan **en la nube**, sin depender de tu equipo:
+
+- `.github/workflows/refresh-snapshot.yml` corre cada 6 horas (`0 */6 * * *`) y a mano
+  desde la pestaña *Actions*.
+- Levanta un MySQL 8 efímero y ejecuta `app/scripts/ci-snapshot.mjs`, que **precarga el
+  historial** (detecciones, precios, scores…) desde el snapshot versionado y luego corre
+  el pipeline real contra las fuentes públicas.
+- Versiona el snapshot actualizado (commit del bot) y republica GitHub Pages.
+
+Para cambiar la frecuencia, edita la expresión `cron` en ese workflow.
+

@@ -95,3 +95,18 @@ Repo: https://github.com/ojairnp/GlobalOpportunityEngine · rama `main` · Pages
 GitHub Actions) → **https://ojairnp.github.io/GlobalOpportunityEngine/**
 Verificado en producción: dashboard con 58 activos, enlace profundo `/asset/22` y snapshot
 `/snapshot/manifest.json` responden 200.
+
+## Auto-actualización en la nube (GitHub Actions)
+Todo el ciclo vive en GitHub, sin depender de una máquina local:
+- `app/scripts/ci-snapshot.mjs` regenera el snapshot en CI. La base MySQL es **efímera**,
+  así que antes del pipeline **precarga el historial** (activos, precios, detecciones,
+  scores, tesis, performance) desde el snapshot versionado; si no, se perdería el
+  historial acumulado y el rendimiento de detecciones pasadas. Ejecuta el pipeline real
+  (fuentes públicas) y guarda con `save`/`saveMap` en formato wire `{json, meta}`.
+- `.github/workflows/refresh-snapshot.yml`: `schedule` cada 6 h (`0 */6 * * *`) + manual.
+  Levanta MySQL 8 como *service*, corre `npx tsx scripts/ci-snapshot.mjs`, versiona el
+  snapshot (commit del bot) y despliega Pages. `contents: write` es necesario para el push.
+- Runner: `tsx` está declarado como devDependency (no depender de transitivos).
+- Nota: GitHub desactiva los `schedule` tras ~60 días sin actividad en el repo; un push
+  cualquiera los reactiva.
+
