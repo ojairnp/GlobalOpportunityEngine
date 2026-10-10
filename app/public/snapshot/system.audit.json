@@ -1,1 +1,1 @@
-{"json":[{"id":1,"ts":"2026-10-10T12:10:30.000Z","actor":"system","action":"pipeline_run","detail":"Pipeline completo en 31.9s — 59 con precios, 0 sin datos, quotes: coinlore=100 coingecko=8 cnbc=16"}],"meta":{"values":{"0.ts":["Date"]},"v":1}}
+{"json":[{"id":1,"ts":"2026-10-10T21:23:02.000Z","actor":"system","action":"pipeline_run","detail":"Pipeline completo en 34.1s — 59 con precios, 0 sin datos, quotes: coinlore=100 coingecko=8 cnbc=16"}],"meta":{"values":{"0.ts":["Date"]},"v":1}}
